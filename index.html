@@ -1,1 +1,630 @@
 
+<header>
+  <div>
+    <h1>⚡ PluggQuest</h1>
+    <p>Plugga smart. Levla upp!</p>
+  </div>
+  <div class="stats">
+    <div class="stat">⭐ XP <strong id="xp">0</strong></div>
+    <div class="stat">🏆 Nivå <strong id="level">1</strong></div>
+    <div class="stat">🔥 Rätt i rad <strong id="streak">0</strong></div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <p class="tag">DITT PLUGGÄVENTYR</p>
+    <h2>Bli en plugglegend! 🚀</h2>
+    <p>Samla XP, träna inför prov och levla upp.</p>
+    <div class="progress"><span id="bar"></span></div>
+    <small id="levelText">0 / 100 XP till nästa nivå</small>
+  </section>
+
+  <nav>
+    <button class="tab active" data-view="quiz">🎯 Quiz</button>
+    <button class="tab" data-view="cards">🃏 Flashcards</button>
+    <button class="tab" data-view="create">✍️ Egna frågor</button>
+    <button class="tab" data-view="results">📊 Resultat</button>
+  </nav>
+
+  <div class="layout">
+    <aside class="panel">
+      <h3>📚 Ämnen</h3>
+      <div class="subjects">
+        <button class="subject active" data-sub="EU och FN">🌍 EU och FN</button>
+        <button class="subject" data-sub="SO">🏛️ SO</button>
+        <button class="subject" data-sub="Engelska">🇬🇧 Engelska</button>
+        <button class="subject" data-sub="Svenska">📖 Svenska</button>
+        <button class="subject" data-sub="Matte">➗ Matte</button>
+        <button class="subject" data-sub="Alla ämnen">🎲 Alla ämnen</button>
+      </div>
+      <hr>
+      <h3>💡 Tips</h3>
+      <p class="muted">Försök svara själv först. Läs förklaringen när du svarat och testa igen!</p>
+    </aside>
+
+    <section class="panel content">
+      <div id="quizView">
+        <p class="muted" id="qMeta"></p>
+        <h2 id="question">Laddar frågor...</h2>
+        <div id="answers" class="answers"></div>
+        <div id="feedback" class="feedback hidden"></div>
+        <button id="skip">Hoppa över →</button>
+        <button id="next" class="hidden">Nästa fråga →</button>
+      </div>
+
+      <div id="cardsView" class="hidden">
+        <h2>🃏 Flashcards</h2>
+        <p class="muted" id="cardCount"></p>
+        <button id="flash" class="flash">Tryck för att visa svaret</button>
+        <p>
+          <button id="prev" class="secondary">← Förra</button>
+          <button id="flip">Vänd kort</button>
+          <button id="cardNext">Nästa →</button>
+        </p>
+      </div>
+
+      <div id="createView" class="hidden">
+        <h2>✍️ Skapa egna frågor</h2>
+        <p class="muted">Dina egna frågor sparas i webbläsaren.</p>
+        <form id="form">
+          <label for="newSubject">Ämne</label>
+          <select id="newSubject">
+            <option>EU och FN</option>
+            <option>SO</option>
+            <option>Engelska</option>
+            <option>Svenska</option>
+            <option>Matte</option>
+          </select>
+
+          <label for="newQ">Fråga</label>
+          <input id="newQ" required maxlength="200" placeholder="Skriv din fråga">
+
+          <label for="a0">Svar A</label>
+          <input id="a0" required placeholder="Alternativ A">
+
+          <label for="a1">Svar B</label>
+          <input id="a1" required placeholder="Alternativ B">
+
+          <label for="a2">Svar C</label>
+          <input id="a2" required placeholder="Alternativ C">
+
+          <label for="correct">Rätt svar</label>
+          <select id="correct">
+            <option value="0">A</option>
+            <option value="1">B</option>
+            <option value="2">C</option>
+          </select>
+
+          <label for="explain">Förklaring (valfritt)</label>
+          <textarea id="explain" placeholder="Förklara varför svaret är rätt"></textarea>
+          <button type="submit">＋ Spara frågan</button>
+        </form>
+        <p id="createMsg" class="feedback hidden"></p>
+        <button id="deleteQuestions" class="danger">Ta bort egna frågor</button>
+      </div>
+
+      <div id="resultsView" class="hidden">
+        <h2>📊 Dina resultat</h2>
+        <div class="result">Besvarade frågor: <strong id="total">0</strong></div>
+        <div class="result">Rätt svar: <strong id="accuracy">0%</strong></div>
+        <div class="result">Bästa streak: <strong id="best">0</strong></div>
+        <h3>Resultat per ämne</h3>
+        <div id="bySubject" class="muted">Svara på några frågor för att se statistiken.</div>
+        <button id="reset" class="danger">Nollställ statistik</button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>PluggQuest ⚡ Ett svar i taget.</footer>
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Inter:wght@400;500;700;800&display=swap');
+
+:root {
+  --bg: #080b14;
+  --panel: #111827;
+  --panel-light: #192338;
+  --neon: #9b5cff;
+  --cyan: #00f5ff;
+  --green: #48ff9b;
+  --text: #f3f6ff;
+  --muted: #9ba9c4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 10% 0%, #30205c 0, transparent 35%),
+    radial-gradient(ellipse at 100% 30%, #073548 0, transparent 30%),
+    var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+}
+
+header, main, footer {
+  width: min(1100px, 92%);
+  margin: auto;
+}
+
+header {
+  padding: 28px 0;
+  border-bottom: 1px solid #26304a;
+}
+
+h1, h2, h3 {
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 1px;
+}
+
+h1 {
+  color: var(--cyan);
+  text-shadow: 0 0 20px #00f5ff66;
+}
+
+h2 {
+  color: var(--text);
+}
+
+p {
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+button, input, select, textarea {
+  font: inherit;
+}
+
+button {
+  border: 1px solid #8e62ff88;
+  border-radius: 12px;
+  padding: 12px 17px;
+  margin: 5px;
+  background: linear-gradient(135deg, #8245f5, #5428b8);
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform .18s, box-shadow .18s, border-color .18s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px #925cff66;
+  border-color: var(--cyan);
+}
+
+button:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+input, select, textarea {
+  width: 100%;
+  margin: 8px 0;
+  padding: 13px;
+  border: 1px solid #34415e;
+  border-radius: 10px;
+  background: #0b1220;
+  color: var(--text);
+}
+
+main {
+  padding: 25px 0 45px;
+}
+
+section, .card, .subject-card, .quiz-card {
+  background: linear-gradient(145deg, #151e31ee, #0d1322ee);
+  border: 1px solid #35415d;
+  border-radius: 18px;
+  padding: 22px;
+  margin: 16px 0;
+  box-shadow: 0 8px 30px #00000030;
+}
+
+section:hover, .card:hover, .subject-card:hover {
+  border-color: #8055e9;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0;
+}
+
+nav button {
+  background: #141c2e;
+  border-color: #364361;
+}
+
+nav button:hover, nav button.active {
+  color: var(--cyan);
+  border-color: var(--cyan);
+  box-shadow: 0 0 15px #00f5ff22;
+}
+
+.progress, progress {
+  width: 100%;
+  accent-color: var(--green);
+}
+
+a {
+  color: var(--cyan);
+}
+
+.correct, .success {
+  color: var(--green);
+}
+
+.incorrect, .error {
+  color: #ff6685;
+}
+
+footer {
+  padding: 20px 0 35px;
+  color: var(--muted);
+  border-top: 1px solid #26304a;
+}
+
+@media (max-width: 600px) {
+  header, main, footer {
+    width: 94%;
+  }
+
+  section, .card, .subject-card, .quiz-card {
+    padding: 16px;
+  }
+
+  button {
+    max-width: 100%;
+  }
+}
+
+
+const original = {
+  "EU och FN": [
+    ["Vad står FN för?", ["Förenta nationerna", "Fria nationernas råd", "Förenade Norden"], 0, "FN bildades efter andra världskriget för att samarbeta om fred och säkerhet."],
+    ["Vad står EU för?", ["Europeiska unionen", "Europeiska utvecklingen", "Enade universiteten"], 0, "EU är ett samarbete mellan europeiska länder."],
+    ["Varför bildades EU:s föregångare?", ["För att minska risken för krig", "För att skapa ett gemensamt språk", "För att avskaffa alla val"], 0, "Länderna ville samarbeta för att minska risken för nya krig."],
+    ["Vilken valuta använder Sverige?", ["Euro", "Svenska kronor", "Pund"], 1, "Sverige använder svenska kronor."],
+    ["Vad gör FN:s säkerhetsråd främst?", ["Bestämmer skolornas läxor", "Arbetar för internationell fred och säkerhet", "Ordnar val i alla länder"], 1, "Säkerhetsrådet har huvudansvar för internationell fred och säkerhet."],
+    ["Vad gör Europaparlamentet?", ["Representerar EU:s medborgare och beslutar om lagar tillsammans med rådet", "Är Sveriges regering", "Bestämmer över FN"], 0, "Europaparlamentet väljs av EU:s medborgare."],
+    ["Vad är EU:s inre marknad?", ["Ett område där varor, tjänster, personer och kapital kan röra sig friare", "En enda stor butik", "Ett gemensamt skolsystem"], 0, "Den inre marknaden underlättar handel och rörlighet."],
+    ["Vad är mänskliga rättigheter?", ["Belöningar man måste förtjäna", "Grundläggande rättigheter som alla människor har", "Regler bara för vuxna"], 1, "Mänskliga rättigheter gäller alla människor."],
+    ["Vad gör UNICEF?", ["Arbetar för barns rättigheter och välmående", "Bestämmer EU:s räntor", "Är en svensk domstol"], 0, "UNICEF arbetar bland annat med barns hälsa, utbildning och skydd."],
+    ["Vilka länder finns i FN:s generalförsamling?", ["Bara de största länderna", "Alla FN:s medlemsländer", "Bara EU-länder"], 1, "Alla FN:s medlemsländer finns representerade."]
+  ],
+  "SO": [
+    ["Vad betyder demokrati?", ["Folket är med och bestämmer", "En person bestämmer allt", "Ingen får rösta"], 0, "I en demokrati kan folket påverka, till exempel genom fria val."],
+    ["Hur ofta är det riksdagsval i Sverige?", ["Vartannat år", "Vart fjärde år", "Vart sjätte år"], 1, "Riksdagsval hålls vart fjärde år."],
+    ["Vad gör riksdagen?", ["Beslutar om lagar och statens budget", "Bestämmer alla lunchmenyer", "Leder alla domstolar"], 0, "Riksdagen beslutar om lagar och budget och granskar regeringen."],
+    ["Vad betyder yttrandefrihet?", ["Att få uttrycka åsikter inom lagens gränser", "Att få hota vem som helst", "Att bara politiker får prata"], 0, "Yttrandefriheten skyddar rätten att uttrycka åsikter."],
+    ["Vad är en lag?", ["En regel som samhället beslutat", "Ett frivilligt tips", "En personlig åsikt"], 0, "Lagar är regler som gäller i samhället."]
+  ],
+  "Engelska": [
+    ["What does 'although' mean?", ["Även om", "Därför", "Innan"], 0, "Although betyder även om eller fastän."],
+    ["Choose the correct sentence.", ["She go to school.", "She goes to school.", "She going to school."], 1, "I presens får he, she och it oftast -s på verbet."],
+    ["What is the past tense of 'buy'?", ["Buyed", "Bought", "Buying"], 1, "Buy är oregelbundet. Dåtid är bought."],
+    ["What does 'careful' mean?", ["Försiktig", "Hungrig", "Högljudd"], 0, "Careful betyder försiktig eller noggrann."]
+  ],
+  "Svenska": [
+    ["Vilket är verbet i 'Hunden springer snabbt'?", ["Hunden", "Springer", "Snabbt"], 1, "Verb beskriver ofta vad någon gör eller vad som händer."],
+    ["Vad är en synonym?", ["Ett ord med ungefär samma betydelse", "Ett ord med motsatt betydelse", "En hel text"], 0, "Glad och lycklig är till exempel synonymer."],
+    ["Vad är motsatsen till generös?", ["Modig", "Snål", "Hjälpsam"], 1, "Generös betyder givmild. Motsatsen kan vara snål."],
+    ["Vad ska en sammanfattning göra?", ["Ta med det viktigaste kortfattat", "Ta med alla detaljer", "Bara innehålla åsikter"], 0, "En sammanfattning återger huvudpoängerna med egna ord."]
+  ],
+  "Matte": [
+    ["Vad är 7 × 8?", ["54", "56", "64"], 1, "7 × 8 = 56."],
+    ["Vad är 25 % av 200?", ["25", "50", "75"], 1, "25 % är en fjärdedel. 200 delat med 4 är 50."],
+    ["Vad är 3/4 som decimaltal?", ["0,25", "0,5", "0,75"], 2, "3 delat med 4 är 0,75."],
+    ["En tröja kostar 300 kr och sänks med 10 %. Vad kostar den nu?", ["270 kr", "290 kr", "330 kr"], 0, "10 % av 300 är 30. 300 minus 30 är 270 kr."]
+  ]
+};
+
+const $ = id => document.getElementById(id);
+let state = {
+  xp: 0, total: 0, correct: 0, streak: 0, best: 0,
+  stats: {}, custom: []
+};
+
+try {
+  const saved = JSON.parse(localStorage.getItem("pluggquest") || "null");
+  if (saved) state = { ...state, ...saved };
+} catch (e) {}
+
+let subject = "EU och FN";
+let deck = [];
+let index = 0;
+let answered = false;
+let cardIndex = 0;
+let flipped = false;
+
+function save() {
+  try {
+    localStorage.setItem("pluggquest", JSON.stringify(state));
+  } catch (e) {}
+}
+
+function questions(sub = subject) {
+  const all = Object.fromEntries(
+    Object.entries(original).map(([name, qs]) => [name, [...qs]])
+  );
+
+  state.custom.forEach(item => {
+    if (!all[item.subject]) all[item.subject] = [];
+    all[item.subject].push(item.data);
+  });
+
+  return sub === "Alla ämnen"
+    ? Object.values(all).flat()
+    : all[sub] || [];
+}
+
+function shuffle(array) {
+  return [...array].sort(() => Math.random() - 0.5);
+}
+
+function updateStats() {
+  $("xp").textContent = state.xp;
+  $("level").textContent = Math.floor(state.xp / 100) + 1;
+  $("streak").textContent = state.streak;
+  $("bar").style.width = (state.xp % 100) + "%";
+  $("levelText").textContent =
+    (state.xp % 100) + " / 100 XP till nästa nivå";
+}
+
+function startQuiz() {
+  deck = shuffle(questions());
+  index = 0;
+  showQuestion();
+}
+
+function showQuestion() {
+  if (!deck.length) {
+    $("question").textContent = "Inga frågor ännu. Skapa en egen fråga!";
+    $("answers").innerHTML = "";
+    $("qMeta").textContent = subject;
+    $("feedback").classList.add("hidden");
+    $("skip").classList.add("hidden");
+    $("next").classList.add("hidden");
+    return;
+  }
+
+  if (index >= deck.length) {
+    deck = shuffle(questions());
+    index = 0;
+  }
+
+  answered = false;
+  const q = deck[index];
+
+  $("qMeta").textContent =
+    subject + " · Fråga " + (index + 1) + " av " + deck.length;
+  $("question").textContent = q[0];
+  $("answers").innerHTML = "";
+  $("feedback").className = "feedback hidden";
+  $("next").classList.add("hidden");
+  $("skip").classList.remove("hidden");
+
+  q[1].forEach((answer, i) => {
+    const button = document.createElement("button");
+    button.className = "answer";
+    button.textContent = String.fromCharCode(65 + i) + ". " + answer;
+    button.onclick = () => chooseAnswer(i, button);
+    $("answers").appendChild(button);
+  });
+}
+
+function chooseAnswer(choice, clickedButton) {
+  if (answered) return;
+  answered = true;
+
+  const q = deck[index];
+  const subjectStats = state.stats[subject] ||
+    (state.stats[subject] = { total: 0, correct: 0 });
+
+  subjectStats.total++;
+  state.total++;
+
+  [...$("answers").children].forEach((button, i) => {
+    button.disabled = true;
+    if (i === q[2]) button.classList.add("correct");
+  });
+
+  if (choice === q[2]) {
+    state.correct++;
+    subjectStats.correct++;
+    state.xp += 10;
+    state.streak++;
+    state.best = Math.max(state.best, state.streak);
+    $("feedback").className = "feedback good";
+    $("feedback").textContent =
+      "✅ Rätt! +10 XP. " + (q[3] || "Bra jobbat!");
+  } else {
+    state.streak = 0;
+    clickedButton.classList.add("wrong");
+    $("feedback").className = "feedback bad";
+    $("feedback").textContent =
+      "❌ Inte riktigt! Rätt svar är: " + q[1][q[2]] + ". " +
+      (q[3] || "Testa igen!");
+  }
+
+  $("next").classList.remove("hidden");
+  $("skip").classList.add("hidden");
+  updateStats();
+  save();
+}
+
+$("next").onclick = () => {
+  index++;
+  showQuestion();
+};
+
+$("skip").onclick = () => {
+  index++;
+  showQuestion();
+};
+
+document.querySelectorAll(".subject").forEach(button => {
+  button.onclick = () => {
+    subject = button.dataset.sub;
+    document.querySelectorAll(".subject").forEach(item =>
+      item.classList.toggle("active", item === button)
+    );
+    startQuiz();
+    if (!$("cardsView").classList.contains("hidden")) showCard();
+  };
+});
+
+function setView(view) {
+  document.querySelectorAll(".tab").forEach(button =>
+    button.classList.toggle("active", button.dataset.view === view)
+  );
+
+  ["quiz", "cards", "create", "results"].forEach(name => {
+    $(name + "View").classList.toggle("hidden", name !== view);
+  });
+
+  if (view === "cards") showCard();
+  if (view === "results") showResults();
+}
+
+document.querySelectorAll(".tab").forEach(button => {
+  button.onclick = () => setView(button.dataset.view);
+});
+
+function showCard() {
+  const cards = questions();
+
+  if (!cards.length) {
+    $("flash").textContent = "Skapa en fråga först!";
+    $("cardCount").textContent = "Inga kort";
+    return;
+  }
+
+  if (cardIndex >= cards.length) cardIndex = 0;
+  if (cardIndex < 0) cardIndex = cards.length - 1;
+
+  const q = cards[cardIndex];
+  $("cardCount").textContent =
+    "Kort " + (cardIndex + 1) + " av " + cards.length;
+
+  $("flash").textContent = flipped
+    ? q[1][q[2]] + (q[3] ? "\n\n" + q[3] : "")
+    : q[0];
+}
+
+function flipCard() {
+  flipped = !flipped;
+  showCard();
+}
+
+$("flash").onclick = flipCard;
+$("flip").onclick = flipCard;
+
+$("cardNext").onclick = () => {
+  cardIndex++;
+  flipped = false;
+  showCard();
+};
+
+$("prev").onclick = () => {
+  cardIndex--;
+  flipped = false;
+  showCard();
+};
+
+$("form").onsubmit = event => {
+  event.preventDefault();
+
+  const item = {
+    subject: $("newSubject").value,
+    data: [
+      $("newQ").value.trim(),
+      [$("a0").value.trim(), $("a1").value.trim(), $("a2").value.trim()],
+      Number($("correct").value),
+      $("explain").value.trim()
+    ]
+  };
+
+  if (!item.data[0] || item.data[1].some(a => !a)) return;
+
+  state.custom.push(item);
+  save();
+
+  $("createMsg").className = "feedback good";
+  $("createMsg").textContent =
+    "Frågan är sparad under " + item.subject + "!";
+
+  event.target.reset();
+
+  if (subject === item.subject) startQuiz();
+  if (subject === "Alla ämnen") startQuiz();
+};
+
+$("deleteQuestions").onclick = () => {
+  if (confirm("Vill du ta bort alla egna frågor?")) {
+    state.custom = [];
+    save();
+    $("createMsg").className = "feedback good";
+    $("createMsg").textContent = "Dina egna frågor är borttagna.";
+    startQuiz();
+    showCard();
+  }
+};
+
+function showResults() {
+  $("total").textContent = state.total;
+  $("accuracy").textContent =
+    (state.total ? Math.round(state.correct / state.total * 100) : 0) + "%";
+  $("best").textContent = state.best;
+
+  const entries = Object.entries(state.stats)
+    .filter(([, value]) => value.total > 0);
+
+  if (!entries.length) {
+    $("bySubject").textContent = "Svara på några frågor först!";
+    return;
+  }
+
+  $("bySubject").innerHTML = "";
+
+  entries.forEach(([name, value]) => {
+    const percent = Math.round(value.correct / value.total * 100);
+    const row = document.createElement("div");
+    row.className = "result";
+
+    const title = document.createElement("strong");
+    title.textContent = name + ": " + percent + "% rätt";
+
+    const detail = document.createElement("p");
+    detail.textContent = value.correct + " av " + value.total + " rätt";
+
+    row.append(title, detail);
+    $("bySubject").appendChild(row);
+  });
+}
+
+$("reset").onclick = () => {
+  if (confirm("Nollställa XP och statistik? Egna frågor sparas.")) {
+    state.xp = 0;
+    state.total = 0;
+    state.correct = 0;
+    state.streak = 0;
+    state.best = 0;
+    state.stats = {};
+    save();
+    updateStats();
+    showResults();
+  }
+};
+
+updateStats();
+startQuiz();
+    

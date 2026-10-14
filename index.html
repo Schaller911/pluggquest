@@ -1,4 +1,200 @@
 
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PluggQuest ⚡</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Inter:wght@400;500;700;800&display=swap');
+
+:root {
+  --bg: #080b14;
+  --panel: #111827;
+  --neon: #9b5cff;
+  --cyan: #00f5ff;
+  --green: #48ff9b;
+  --text: #f3f6ff;
+  --muted: #9ba9c4;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 10% 0%, #30205c 0, transparent 35%),
+    radial-gradient(ellipse at 100% 30%, #073548 0, transparent 30%),
+    var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+}
+
+header, main, footer {
+  width: min(1100px, 92%);
+  margin: auto;
+}
+
+header {
+  padding: 28px 0;
+  border-bottom: 1px solid #26304a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+h1, h2, h3 {
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 1px;
+}
+
+h1 {
+  color: var(--cyan);
+  text-shadow: 0 0 20px #00f5ff66;
+}
+
+h2 { color: var(--text); }
+p { color: var(--muted); line-height: 1.65; }
+
+button, input, select, textarea { font: inherit; }
+
+button {
+  border: 1px solid #8e62ff88;
+  border-radius: 12px;
+  padding: 12px 17px;
+  margin: 5px;
+  background: linear-gradient(135deg, #8245f5, #5428b8);
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+  transition: .18s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px #925cff66;
+  border-color: var(--cyan);
+}
+
+button:disabled { cursor: default; opacity: .8; transform: none; }
+
+input, select, textarea {
+  width: 100%;
+  margin: 8px 0;
+  padding: 13px;
+  border: 1px solid #34415e;
+  border-radius: 10px;
+  background: #0b1220;
+  color: var(--text);
+}
+
+textarea { min-height: 90px; resize: vertical; }
+label { display: block; margin-top: 12px; font-weight: 700; }
+main { padding: 25px 0 45px; }
+
+section, .card, .quiz-card {
+  background: linear-gradient(145deg, #151e31ee, #0d1322ee);
+  border: 1px solid #35415d;
+  border-radius: 18px;
+  padding: 22px;
+  margin: 16px 0;
+  box-shadow: 0 8px 30px #00000030;
+}
+
+.hero { text-align: center; padding: 28px 22px; }
+.hero h2 { font-size: clamp(1.4rem, 4vw, 2.2rem); }
+.tag { color: var(--cyan); font-weight: 800; letter-spacing: 2px; }
+
+.stats { display: flex; gap: 10px; flex-wrap: wrap; }
+.stat, .result {
+  padding: 12px 15px;
+  border: 1px solid #35415d;
+  border-radius: 12px;
+  background: #111827;
+}
+.stat strong { color: var(--cyan); }
+
+.progress {
+  width: 100%;
+  height: 12px;
+  margin: 20px 0 8px;
+  border-radius: 99px;
+  overflow: hidden;
+  background: #26304a;
+}
+
+#bar {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--neon), var(--cyan), var(--green));
+  transition: width .3s ease;
+}
+
+nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
+nav button, .subjects button, .answers button {
+  background: #141c2e;
+  border-color: #364361;
+}
+
+nav button.active, .subjects button.active {
+  color: var(--cyan);
+  border-color: var(--cyan);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(210px, 270px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.panel { min-width: 0; }
+.subjects { display: flex; flex-direction: column; gap: 5px; }
+.subjects button { width: 100%; margin: 0; text-align: left; }
+.content { min-height: 380px; }
+
+.answers { display: flex; flex-direction: column; gap: 8px; margin: 20px 0; }
+.answers button { width: 100%; margin: 0; text-align: left; }
+.answers button.correct { border-color: var(--green); background: #123629; }
+.answers button.wrong { border-color: #ff6685; background: #3b1727; }
+
+.feedback { padding: 15px; margin: 15px 0; border-radius: 12px; line-height: 1.6; }
+.feedback.good { color: var(--green); background: #123629; }
+.feedback.bad { color: #ff9caf; background: #3b1727; }
+.hidden { display: none !important; }
+.muted, small { color: var(--muted); }
+.secondary { background: #26304a; }
+.danger { background: linear-gradient(135deg, #b82c50, #781b38); }
+.flash {
+  display: block;
+  width: 100%;
+  min-height: 170px;
+  white-space: pre-wrap;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  background: linear-gradient(135deg, #30205c, #073548);
+}
+
+.result { margin: 10px 0; }
+footer { padding: 20px 0 35px; color: var(--muted); border-top: 1px solid #26304a; }
+
+@media (max-width: 700px) {
+  header, main, footer { width: 94%; }
+  .layout { grid-template-columns: 1fr; }
+  section, .card, .quiz-card { padding: 16px; }
+  .stats { gap: 6px; }
+  .stat { padding: 9px; }
+}
+</style>
+</head>
+<body>
+
+
 <header>
   <div>
     <h1>⚡ PluggQuest</h1>
@@ -76,26 +272,20 @@
             <option>Svenska</option>
             <option>Matte</option>
           </select>
-
           <label for="newQ">Fråga</label>
           <input id="newQ" required maxlength="200" placeholder="Skriv din fråga">
-
           <label for="a0">Svar A</label>
           <input id="a0" required placeholder="Alternativ A">
-
           <label for="a1">Svar B</label>
           <input id="a1" required placeholder="Alternativ B">
-
           <label for="a2">Svar C</label>
           <input id="a2" required placeholder="Alternativ C">
-
           <label for="correct">Rätt svar</label>
           <select id="correct">
             <option value="0">A</option>
             <option value="1">B</option>
             <option value="2">C</option>
           </select>
-
           <label for="explain">Förklaring (valfritt)</label>
           <textarea id="explain" placeholder="Förklara varför svaret är rätt"></textarea>
           <button type="submit">＋ Spara frågan</button>
@@ -119,174 +309,7 @@
 
 <footer>PluggQuest ⚡ Ett svar i taget.</footer>
 
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Inter:wght@400;500;700;800&display=swap');
-
-:root {
-  --bg: #080b14;
-  --panel: #111827;
-  --panel-light: #192338;
-  --neon: #9b5cff;
-  --cyan: #00f5ff;
-  --green: #48ff9b;
-  --text: #f3f6ff;
-  --muted: #9ba9c4;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  background:
-    radial-gradient(ellipse at 10% 0%, #30205c 0, transparent 35%),
-    radial-gradient(ellipse at 100% 30%, #073548 0, transparent 30%),
-    var(--bg);
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-}
-
-header, main, footer {
-  width: min(1100px, 92%);
-  margin: auto;
-}
-
-header {
-  padding: 28px 0;
-  border-bottom: 1px solid #26304a;
-}
-
-h1, h2, h3 {
-  font-family: 'Orbitron', sans-serif;
-  letter-spacing: 1px;
-}
-
-h1 {
-  color: var(--cyan);
-  text-shadow: 0 0 20px #00f5ff66;
-}
-
-h2 {
-  color: var(--text);
-}
-
-p {
-  color: var(--muted);
-  line-height: 1.65;
-}
-
-button, input, select, textarea {
-  font: inherit;
-}
-
-button {
-  border: 1px solid #8e62ff88;
-  border-radius: 12px;
-  padding: 12px 17px;
-  margin: 5px;
-  background: linear-gradient(135deg, #8245f5, #5428b8);
-  color: white;
-  font-weight: 800;
-  cursor: pointer;
-  transition: transform .18s, box-shadow .18s, border-color .18s;
-}
-
-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 20px #925cff66;
-  border-color: var(--cyan);
-}
-
-button:focus-visible, input:focus-visible,
-select:focus-visible, textarea:focus-visible {
-  outline: 2px solid var(--cyan);
-  outline-offset: 3px;
-}
-
-input, select, textarea {
-  width: 100%;
-  margin: 8px 0;
-  padding: 13px;
-  border: 1px solid #34415e;
-  border-radius: 10px;
-  background: #0b1220;
-  color: var(--text);
-}
-
-main {
-  padding: 25px 0 45px;
-}
-
-section, .card, .subject-card, .quiz-card {
-  background: linear-gradient(145deg, #151e31ee, #0d1322ee);
-  border: 1px solid #35415d;
-  border-radius: 18px;
-  padding: 22px;
-  margin: 16px 0;
-  box-shadow: 0 8px 30px #00000030;
-}
-
-section:hover, .card:hover, .subject-card:hover {
-  border-color: #8055e9;
-}
-
-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 18px 0;
-}
-
-nav button {
-  background: #141c2e;
-  border-color: #364361;
-}
-
-nav button:hover, nav button.active {
-  color: var(--cyan);
-  border-color: var(--cyan);
-  box-shadow: 0 0 15px #00f5ff22;
-}
-
-.progress, progress {
-  width: 100%;
-  accent-color: var(--green);
-}
-
-a {
-  color: var(--cyan);
-}
-
-.correct, .success {
-  color: var(--green);
-}
-
-.incorrect, .error {
-  color: #ff6685;
-}
-
-footer {
-  padding: 20px 0 35px;
-  color: var(--muted);
-  border-top: 1px solid #26304a;
-}
-
-@media (max-width: 600px) {
-  header, main, footer {
-    width: 94%;
-  }
-
-  section, .card, .subject-card, .quiz-card {
-    padding: 16px;
-  }
-
-  button {
-    max-width: 100%;
-  }
-}
-
-
+<script>
 const original = {
   "EU och FN": [
     ["Vad står FN för?", ["Förenta nationerna", "Fria nationernas råd", "Förenade Norden"], 0, "FN bildades efter andra världskriget för att samarbeta om fred och säkerhet."],
@@ -327,304 +350,268 @@ const original = {
   ]
 };
 
-const $ = id => document.getElementById(id);
-let state = {
-  xp: 0, total: 0, correct: 0, streak: 0, best: 0,
-  stats: {}, custom: []
-};
 
-try {
-  const saved = JSON.parse(localStorage.getItem("pluggquest") || "null");
-  if (saved) state = { ...state, ...saved };
-} catch (e) {}
-
-let subject = "EU och FN";
-let deck = [];
+let currentSubject = "EU och FN";
+let questions = [];
 let index = 0;
+let selected = null;
 let answered = false;
 let cardIndex = 0;
-let flipped = false;
+let cardFlipped = false;
+
+let xp = Number(localStorage.getItem("pq_xp") || 0);
+let streak = Number(localStorage.getItem("pq_streak") || 0);
+let best = Number(localStorage.getItem("pq_best") || 0);
+let total = Number(localStorage.getItem("pq_total") || 0);
+let correctTotal = Number(localStorage.getItem("pq_correct") || 0);
+let stats = JSON.parse(localStorage.getItem("pq_stats") || "{}");
+let customQuestions = JSON.parse(localStorage.getItem("pq_custom") || "[]");
+
+const $ = id => document.getElementById(id);
+const allQuestions = () => [
+  ...Object.entries(original).flatMap(([subject, list]) =>
+    list.map(q => ({ subject, q: q[0], answers: q[1], correct: q[2], explain: q[3] }))
+  ),
+  ...customQuestions
+];
 
 function save() {
-  try {
-    localStorage.setItem("pluggquest", JSON.stringify(state));
-  } catch (e) {}
-}
-
-function questions(sub = subject) {
-  const all = Object.fromEntries(
-    Object.entries(original).map(([name, qs]) => [name, [...qs]])
-  );
-
-  state.custom.forEach(item => {
-    if (!all[item.subject]) all[item.subject] = [];
-    all[item.subject].push(item.data);
-  });
-
-  return sub === "Alla ämnen"
-    ? Object.values(all).flat()
-    : all[sub] || [];
-}
-
-function shuffle(array) {
-  return [...array].sort(() => Math.random() - 0.5);
+  localStorage.setItem("pq_xp", xp);
+  localStorage.setItem("pq_streak", streak);
+  localStorage.setItem("pq_best", best);
+  localStorage.setItem("pq_total", total);
+  localStorage.setItem("pq_correct", correctTotal);
+  localStorage.setItem("pq_stats", JSON.stringify(stats));
+  localStorage.setItem("pq_custom", JSON.stringify(customQuestions));
+  updateStats();
 }
 
 function updateStats() {
-  $("xp").textContent = state.xp;
-  $("level").textContent = Math.floor(state.xp / 100) + 1;
-  $("streak").textContent = state.streak;
-  $("bar").style.width = (state.xp % 100) + "%";
-  $("levelText").textContent =
-    (state.xp % 100) + " / 100 XP till nästa nivå";
+  $("xp").textContent = xp;
+  $("level").textContent = Math.floor(xp / 100) + 1;
+  $("streak").textContent = streak;
+  $("bar").style.width = (xp % 100) + "%";
+  ("levelText").textContent=`{xp % 100} / 100 XP till nästa nivå`;
+  $("total").textContent = total;
+  $("accuracy").textContent = total ? Math.round(correctTotal / total * 100) + "%" : "0%";
+  $("best").textContent = best;
+
+  const box = $("bySubject");
+  const entries = Object.entries(stats);
+  box.innerHTML = entries.length
+    ? entries.map(([name, s]) =>
+        `<p><strong>${name}</strong>: ${s.correct} rätt av ${s.total}</p>`
+      ).join("")
+    : "Svara på några frågor för att se statistiken.";
+}
+
+function shuffle(list) {
+  return [...list].sort(() => Math.random() - 0.5);
 }
 
 function startQuiz() {
-  deck = shuffle(questions());
+  let list = allQuestions();
+  if (currentSubject !== "Alla ämnen") {
+    list = list.filter(q => q.subject === currentSubject);
+  }
+  questions = shuffle(list);
   index = 0;
   showQuestion();
 }
 
 function showQuestion() {
-  if (!deck.length) {
-    $("question").textContent = "Inga frågor ännu. Skapa en egen fråga!";
-    $("answers").innerHTML = "";
-    $("qMeta").textContent = subject;
-    $("feedback").classList.add("hidden");
-    $("skip").classList.add("hidden");
-    $("next").classList.add("hidden");
-    return;
-  }
-
-  if (index >= deck.length) {
-    deck = shuffle(questions());
-    index = 0;
-  }
-
   answered = false;
-  const q = deck[index];
-
-  $("qMeta").textContent =
-    subject + " · Fråga " + (index + 1) + " av " + deck.length;
-  $("question").textContent = q[0];
-  $("answers").innerHTML = "";
-  $("feedback").className = "feedback hidden";
+  selected = null;
+  $("feedback").classList.add("hidden");
   $("next").classList.add("hidden");
   $("skip").classList.remove("hidden");
 
-  q[1].forEach((answer, i) => {
+  if (!questions.length) {
+    $("qMeta").textContent = "";
+    $("question").textContent = "Inga frågor hittades.";
+    $("answers").innerHTML = "";
+    return;
+  }
+
+  if (index >= questions.length) {
+    index = 0;
+    questions = shuffle(questions);
+  }
+
+  const q = questions[index];
+  ("qMeta").textContent=`{q.subject} • Fråga ${index + 1} av ${questions.length}`;
+  $("question").textContent = q.q;
+  $("answers").innerHTML = "";
+
+  q.answers.forEach((answer, i) => {
     const button = document.createElement("button");
     button.className = "answer";
-    button.textContent = String.fromCharCode(65 + i) + ". " + answer;
-    button.onclick = () => chooseAnswer(i, button);
+    button.textContent = `${String.fromCharCode(65 + i)}. ${answer}`;
+    button.addEventListener("click", () => chooseAnswer(i));
     $("answers").appendChild(button);
   });
 }
 
-function chooseAnswer(choice, clickedButton) {
+function chooseAnswer(choice) {
   if (answered) return;
   answered = true;
+  selected = choice;
 
-  const q = deck[index];
-  const subjectStats = state.stats[subject] ||
-    (state.stats[subject] = { total: 0, correct: 0 });
-
-  subjectStats.total++;
-  state.total++;
-
-  [...$("answers").children].forEach((button, i) => {
+  const q = questions[index];
+  const buttons = [...$("answers").querySelectorAll("button")];
+  buttons.forEach((button, i) => {
     button.disabled = true;
-    if (i === q[2]) button.classList.add("correct");
+    if (i === q.correct) button.classList.add("correct");
+    if (i === choice && choice !== q.correct) button.classList.add("wrong");
   });
 
-  if (choice === q[2]) {
-    state.correct++;
-    subjectStats.correct++;
-    state.xp += 10;
-    state.streak++;
-    state.best = Math.max(state.best, state.streak);
+  total++;
+  stats[q.subject] ||= { total: 0, correct: 0 };
+  stats[q.subject].total++;
+
+  if (choice === q.correct) {
+    correctTotal++;
+    stats[q.subject].correct++;
+    streak++;
+    best = Math.max(best, streak);
+    xp += 10;
+    $("feedback").textContent = `✅ Rätt! +10 XP. ${q.explain || ""}`;
     $("feedback").className = "feedback good";
-    $("feedback").textContent =
-      "✅ Rätt! +10 XP. " + (q[3] || "Bra jobbat!");
   } else {
-    state.streak = 0;
-    clickedButton.classList.add("wrong");
+    streak = 0;
+    $("feedback").textContent = `❌ Fel! Rätt svar är ${String.fromCharCode(65 + q.correct)}. ${q.answers[q.correct]}. ${q.explain || ""}`;
     $("feedback").className = "feedback bad";
-    $("feedback").textContent =
-      "❌ Inte riktigt! Rätt svar är: " + q[1][q[2]] + ". " +
-      (q[3] || "Testa igen!");
   }
 
-  $("next").classList.remove("hidden");
   $("skip").classList.add("hidden");
-  updateStats();
+  $("next").classList.remove("hidden");
   save();
 }
 
-$("next").onclick = () => {
+$("next").addEventListener("click", () => {
   index++;
   showQuestion();
-};
-
-$("skip").onclick = () => {
-  index++;
-  showQuestion();
-};
-
-document.querySelectorAll(".subject").forEach(button => {
-  button.onclick = () => {
-    subject = button.dataset.sub;
-    document.querySelectorAll(".subject").forEach(item =>
-      item.classList.toggle("active", item === button)
-    );
-    startQuiz();
-    if (!$("cardsView").classList.contains("hidden")) showCard();
-  };
 });
 
-function setView(view) {
-  document.querySelectorAll(".tab").forEach(button =>
-    button.classList.toggle("active", button.dataset.view === view)
-  );
-
-  ["quiz", "cards", "create", "results"].forEach(name => {
-    $(name + "View").classList.toggle("hidden", name !== view);
-  });
-
-  if (view === "cards") showCard();
-  if (view === "results") showResults();
-}
+$("skip").addEventListener("click", () => {
+  index++;
+  showQuestion();
+});
 
 document.querySelectorAll(".tab").forEach(button => {
-  button.onclick = () => setView(button.dataset.view);
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
+    button.classList.add("active");
+
+    ["quiz", "cards", "create", "results"].forEach(view => {
+      $(view + "View").classList.toggle("hidden", view !== button.dataset.view);
+    });
+
+    if (button.dataset.view === "cards") showCard();
+    if (button.dataset.view === "results") updateStats();
+  });
 });
 
-function showCard() {
-  const cards = questions();
+document.querySelectorAll(".subject").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll(".subject").forEach(b => b.classList.remove("active"));
+    button.classList.add("active");
+    currentSubject = button.dataset.sub;
+    startQuiz();
+  });
+});
 
+function getCards() {
+  let list = allQuestions();
+  if (currentSubject !== "Alla ämnen") {
+    list = list.filter(q => q.subject === currentSubject);
+  }
+  return list;
+}
+
+function showCard() {
+  const cards = getCards();
   if (!cards.length) {
-    $("flash").textContent = "Skapa en fråga först!";
-    $("cardCount").textContent = "Inga kort";
+    $("flash").textContent = "Inga kort finns.";
+    $("cardCount").textContent = "";
     return;
   }
 
   if (cardIndex >= cards.length) cardIndex = 0;
   if (cardIndex < 0) cardIndex = cards.length - 1;
 
-  const q = cards[cardIndex];
-  $("cardCount").textContent =
-    "Kort " + (cardIndex + 1) + " av " + cards.length;
-
-  $("flash").textContent = flipped
-    ? q[1][q[2]] + (q[3] ? "\n\n" + q[3] : "")
-    : q[0];
+  cardFlipped = false;
+  const card = cards[cardIndex];
+  $("cardCount").textContent = `Kort ${cardIndex + 1} av ${cards.length} • ${card.subject}`;
+  $("flash").textContent = card.q;
 }
 
-function flipCard() {
-  flipped = !flipped;
-  showCard();
-}
+$("flip").addEventListener("click", () => {
+  const cards = getCards();
+  if (!cards.length) return;
+  const card = cards[cardIndex % cards.length];
+  cardFlipped = !cardFlipped;
+  $("flash").textContent = cardFlipped
+    ? `Svar: ${card.answers[card.correct]}\n\n${card.explain || ""}`
+    : card.q;
+});
 
-$("flash").onclick = flipCard;
-$("flip").onclick = flipCard;
-
-$("cardNext").onclick = () => {
-  cardIndex++;
-  flipped = false;
-  showCard();
-};
-
-$("prev").onclick = () => {
+$("flash").addEventListener("click", () => $("flip").click());
+$("prev").addEventListener("click", () => {
   cardIndex--;
-  flipped = false;
   showCard();
-};
+});
+$("cardNext").addEventListener("click", () => {
+  cardIndex++;
+  showCard();
+});
 
-$("form").onsubmit = event => {
+$("form").addEventListener("submit", event => {
   event.preventDefault();
 
-  const item = {
+  customQuestions.push({
     subject: $("newSubject").value,
-    data: [
-      $("newQ").value.trim(),
-      [$("a0").value.trim(), $("a1").value.trim(), $("a2").value.trim()],
-      Number($("correct").value),
-      $("explain").value.trim()
-    ]
-  };
+    q: $("newQ").value.trim(),
+    answers: [$("a0").value.trim(), $("a1").value.trim(), $("a2").value.trim()],
+    correct: Number($("correct").value),
+    explain: $("explain").value.trim()
+  });
 
-  if (!item.data[0] || item.data[1].some(a => !a)) return;
-
-  state.custom.push(item);
   save();
-
+  $("form").reset();
+  $("createMsg").textContent = "✅ Frågan sparades!";
   $("createMsg").className = "feedback good";
-  $("createMsg").textContent =
-    "Frågan är sparad under " + item.subject + "!";
+});
 
-  event.target.reset();
-
-  if (subject === item.subject) startQuiz();
-  if (subject === "Alla ämnen") startQuiz();
-};
-
-$("deleteQuestions").onclick = () => {
-  if (confirm("Vill du ta bort alla egna frågor?")) {
-    state.custom = [];
-    save();
-    $("createMsg").className = "feedback good";
-    $("createMsg").textContent = "Dina egna frågor är borttagna.";
-    startQuiz();
-    showCard();
-  }
-};
-
-function showResults() {
-  $("total").textContent = state.total;
-  $("accuracy").textContent =
-    (state.total ? Math.round(state.correct / state.total * 100) : 0) + "%";
-  $("best").textContent = state.best;
-
-  const entries = Object.entries(state.stats)
-    .filter(([, value]) => value.total > 0);
-
-  if (!entries.length) {
-    $("bySubject").textContent = "Svara på några frågor först!";
+$("deleteQuestions").addEventListener("click", () => {
+  if (!customQuestions.length) {
+    alert("Du har inga egna frågor att ta bort.");
     return;
   }
-
-  $("bySubject").innerHTML = "";
-
-  entries.forEach(([name, value]) => {
-    const percent = Math.round(value.correct / value.total * 100);
-    const row = document.createElement("div");
-    row.className = "result";
-
-    const title = document.createElement("strong");
-    title.textContent = name + ": " + percent + "% rätt";
-
-    const detail = document.createElement("p");
-    detail.textContent = value.correct + " av " + value.total + " rätt";
-
-    row.append(title, detail);
-    $("bySubject").appendChild(row);
-  });
-}
-
-$("reset").onclick = () => {
-  if (confirm("Nollställa XP och statistik? Egna frågor sparas.")) {
-    state.xp = 0;
-    state.total = 0;
-    state.correct = 0;
-    state.streak = 0;
-    state.best = 0;
-    state.stats = {};
+  if (confirm("Vill du ta bort alla dina egna frågor?")) {
+    customQuestions = [];
     save();
-    updateStats();
-    showResults();
+    $("createMsg").textContent = "Dina egna frågor har tagits bort.";
+    $("createMsg").className = "feedback good";
+    startQuiz();
   }
-};
+});
+
+$("reset").addEventListener("click", () => {
+  if (!confirm("Vill du nollställa all statistik och XP?")) return;
+  xp = 0;
+  streak = 0;
+  best = 0;
+  total = 0;
+  correctTotal = 0;
+  stats = {};
+  save();
+});
 
 updateStats();
 startQuiz();
-    
+</script>
+</body>
+</html>
+
+
